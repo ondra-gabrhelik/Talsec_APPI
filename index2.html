@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talsec RASP: A Comprehensive Compliance Analysis for the Japanese Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Brilliant Blues -->
+    <!-- Application Structure Plan: The application is structured as a comprehensive, single-page narrative that guides the user from the foundational technical details to the final strategic recommendation. It starts with an executive summary, delves into the technical architecture and data types collected, then applies Japan's APPI legal framework to reveal the compliance gap. It then provides actionable guidance on implementation (consent, disclosures) and strategic risk mitigation before concluding with a clear verdict. This top-down, detailed approach allows a user to either get a quick overview or explore the full rationale behind the recommendation, making it a complete resource. -->
+    <!-- Visualization & Content Choices: 
+        - Data Categories: Report Info -> Goal: Inform -> Viz: Styled HTML list -> Interaction: None -> Justification: Clearly lists the types of data collected, providing a necessary foundation for the legal analysis. -> Library/Method: HTML/Tailwind.
+        - Data Flow Diagram: Report Info -> Goal: Compare processes -> Viz: HTML/CSS Flowchart -> Interaction: None -> Justification: The architectural difference is the report's central thesis. A visual flowchart is the clearest way to show the freeRASP (third-party US transfer) vs. RASP+ (internal processing) data path. -> Library/Method: HTML/Tailwind.
+        - Detailed Comparison Table: Report Info -> Goal: Compare -> Viz: HTML Table -> Interaction: None -> Justification: Provides a detailed, at-a-glance comparison of the two products across multiple vectors, supplementing the visual charts. -> Library/Method: HTML/Tailwind.
+        - APPI Risk Profile: Report Info -> Goal: Compare risk levels -> Viz: Horizontal Bar Chart -> Interaction: Hover tooltips -> Justification: A bar chart provides a stark, immediate visual contrast between the "High" risk of freeRASP and the "Low" risk of RASP+. -> Library/Method: Chart.js/Canvas.
+        - Compliance Checklist: Report Info -> Goal: Organize/Summarize -> Viz: HTML Table -> Interaction: None -> Justification: Translates the legal analysis into a clear, risk-based scorecard, making the compliance differences easy to grasp. -> Library/Method: HTML/Tailwind.
+        - Privacy Policy Wording: Report Info -> Goal: Compare/Inform -> Viz: HTML Table -> Interaction: None -> Justification: Provides concrete, actionable examples of the disclosure burden, highlighting the practical differences in implementation. -> Library/Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        .flow-card {
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+        .flow-arrow {
+            font-size: 2.5rem;
+            line-height: 1;
+            color: #495057;
+        }
+        .section-header {
+            color: #03045E;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .card {
+                padding: 2.5rem;
+            }
+        }
+        .card-title {
+            color: #0077B6;
+            font-weight: 700;
+        }
+        .nav-link {
+            transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 0.5rem;
+        }
+        .active-nav-link {
+            color: #0077B6;
+            border-bottom-color: #0077B6;
+        }
+        table th {
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold section-header">Talsec RASP Analysis</h1>
+            <div class="hidden md:flex space-x-6 lg:space-x-8">
+                <a href="#tech-analysis" class="nav-link font-medium text-gray-600">Technical Analysis</a>
+                <a href="#legal-analysis" class="nav-link font-medium text-gray-600">Legal Analysis</a>
+                <a href="#implementation" class="nav-link font-medium text-gray-600">Implementation</a>
+                <a href="#risk" class="nav-link font-medium text-gray-600">Risk Mitigation</a>
+                <a href="#recommendation" class="nav-link font-medium text-gray-600">Verdict</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-12 md:py-16">
+
+        <section id="intro" class="text-center mb-16 md:mb-24">
+            <h2 class="text-4xl md:text-5xl font-extrabold section-header mb-6">Mobile Security in Japan: A Comprehensive Analysis</h2>
+            <p class="max-w-4xl mx-auto text-lg text-gray-600 leading-relaxed">
+                This interactive report provides a complete technical and legal assessment of Talsec's freeRASP and RASP+ solutions for deployment in the Japanese market. The analysis focuses on compliance with Japan's Act on the Protection of Personal Information (APPI) and evaluates the strategic implications of choosing between the free and commercial offerings. The core finding is that the architectural differences lead to vastly different risk profiles, making RASP+ the only prudent choice for enterprise deployment in Japan.
+            </p>
+        </section>
+
+        <section id="tech-analysis" class="mb-16 md:mb-24 space-y-12">
+            <div class="text-center">
+                <h3 class="text-3xl md:text-4xl font-bold section-header mb-4">Section 1: Technical & Architectural Analysis</h3>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">This section establishes the factual basis of what data the Talsec SDK handles and how it is processed, providing the necessary technical foundation for the subsequent legal analysis.</p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title text-2xl mb-4">1.1 Data Categories Collected</h4>
+                <p class="text-gray-600 mb-6">The Talsec SDK must collect and analyze a range of data signals from the device and application environment to perform its security functions. The nature of the detected threats allows for a clear inference of the data categories involved:</p>
+                <ul class="space-y-4">
+                    <li class="flex items-start"><span class="text-blue-500 mr-4 mt-1 text-2xl">&#128737;</span><div><strong class="text-gray-800">Threat Detection Data:</strong> Checks for root/jailbreak (`privilegedAccess`), app tampering (`appIntegrity`), and device binding all require access to file systems, package information, and hardware identifiers. Event logging inherently includes metadata like timestamps and IP addresses.</div></li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-4 mt-1 text-2xl">&#128270;</span><div><strong class="text-gray-800">Malware Detection (Android):</strong> The `onMalwareDetected` callback implies the SDK scans for suspicious applications, which requires access to the list of installed packages on the device.</div></li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-4 mt-1 text-2xl">&#128273;</span><div><strong class="text-gray-800">ExternalID Functionality:</strong> Developers can pass a custom `ExternalID` (e.g., a user account ID) to be associated with security logs. This feature can transform pseudonymous security telemetry into data directly linked to an identifiable person, elevating its legal classification.</div></li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title text-2xl mb-2 text-center">1.2 Data Flow: freeRASP vs. RASP+</h4>
+                <p class="text-gray-600 mb-8 text-center max-w-3xl mx-auto">The most crucial architectural distinction lies in the control over data flow and sovereignty. This difference has profound legal consequences under APPI.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                    <div class="border-t-4 border-red-500 bg-gray-50 p-6 rounded-lg">
+                        <h5 class="text-xl font-bold text-red-600 mb-4 text-center">freeRASP Architecture</h5>
+                        <div class="flex flex-col items-center space-y-4">
+                            <div class="bg-white p-3 rounded-lg w-full text-center shadow-sm"><span class="font-bold">Your Mobile App</span></div>
+                            <div class="flow-arrow">&#129047;</div>
+                            <div class="flow-card border-gray-400 p-3 rounded-lg w-full text-center bg-white"><span class="font-semibold">Device & Network Data (PRI)</span></div>
+                            <div class="flow-arrow">&#129047;</div>
+                            <div class="flow-card border-red-500 bg-red-50 p-3 rounded-lg w-full text-center">
+                                <span class="font-bold text-red-700">Talsec Cloud (USA)</span>
+                                <span class="block text-sm text-red-600">Third-Party, Cross-Border Transfer</span>
+                            </div>
+                        </div>
+                        <p class="mt-6 text-gray-700 text-center text-sm">Data is automatically sent to a third party in the USA, creating significant compliance hurdles.</p>
+                    </div>
+                    <div class="border-t-4 border-blue-600 bg-gray-50 p-6 rounded-lg">
+                        <h5 class="text-xl font-bold text-blue-700 mb-4 text-center">RASP+ Architecture</h5>
+                        <div class="flex flex-col items-center space-y-4">
+                            <div class="bg-white p-3 rounded-lg w-full text-center shadow-sm"><span class="font-bold">Your Mobile App</span></div>
+                            <div class="flow-arrow">&#129047;</div>
+                            <div class="flow-card border-gray-400 p-3 rounded-lg w-full text-center bg-white"><span class="font-semibold">Device & Network Data (PRI)</span></div>
+                            <div class="flow-arrow">&#129047;</div>
+                            <div class="flow-card border-blue-600 bg-blue-50 p-3 rounded-lg w-full text-center">
+                                <span class="font-bold text-blue-800">Your Cloud (e.g., in Japan)</span>
+                                <span class="block text-sm text-blue-700">Internal Processing, Full Control</span>
+                            </div>
+                        </div>
+                        <p class="mt-6 text-gray-700 text-center text-sm">You control the endpoint, keeping data in-house and avoiding third-party transfer risks.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title text-2xl mb-4">1.3 Detailed Feature Comparison</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-700 uppercase">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Feature</th>
+                                <th scope="col" class="px-6 py-3">freeRASP</th>
+                                <th scope="col" class="px-6 py-3">RASP+</th>
+                                <th scope="col" class="px-6 py-3">Strategic Advantage of RASP+</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b"><td class="px-6 py-4 font-medium">Data Telemetry Endpoint</td><td class="px-6 py-4">Talsec-controlled (AWS in USA)</td><td class="px-6 py-4">Customer-controlled</td><td class="px-6 py-4">Enables data sovereignty; avoids cross-border transfer issues.</td></tr>
+                            <tr class="bg-gray-50 border-b"><td class="px-6 py-4 font-medium">Binary Architecture</td><td class="px-6 py-4">Generic, shared binary</td><td class="px-6 py-4">Unique binary per app build</td><td class="px-6 py-4">Increases resilience against reverse engineering.</td></tr>
+                            <tr class="bg-white border-b"><td class="px-6 py-4 font-medium">Backend Integrity Verification</td><td class="px-6 py-4">Not available</td><td class="px-6 py-4">AppiCrypt® included</td><td class="px-6 py-4">Prevents API abuse from compromised clients.</td></tr>
+                            <tr class="bg-gray-50 border-b"><td class="px-6 py-4 font-medium">Remote Configuration</td><td class="px-6 py-4">Not available</td><td class="px-6 py-4">Full remote configuration</td><td class="px-6 py-4">Allows dynamic security adjustments without an app update.</td></tr>
+                            <tr class="bg-white border-b"><td class="px-6 py-4 font-medium">Advanced Threat Detection</td><td class="px-6 py-4">Basic checks</td><td class="px-6 py-4">Advanced checks (UI Overlay, VPN)</td><td class="px-6 py-4">Defends against sophisticated attack vectors.</td></tr>
+                            <tr class="bg-gray-50"><td class="px-6 py-4 font-medium">Internal SDK Monitoring</td><td class="px-6 py-4">Not available</td><td class="px-6 py-4">Included (Android only)</td><td class="px-6 py-4">Provides a self-protection layer for the RASP SDK itself.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="legal-analysis" class="mb-16 md:mb-24 space-y-12">
+            <div class="text-center">
+                <h3 class="text-3xl md:text-4xl font-bold section-header mb-4">Section 2: Compliance with Japan's APPI</h3>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">This section applies Japanese law to the technical facts, demonstrating the significant compliance gap between the products.</p>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title text-2xl mb-4">2.1 Data Classification: "Personally Related Information" (PRI)</h4>
+                <p class="text-gray-600">Japan's APPI has a broad category for "Personally Related Information" (PRI). Official guidance and precedent confirm that data collected by Talsec—such as device fingerprints, IP addresses, and advertising IDs—unambiguously falls under this category. This classification triggers specific legal obligations.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card">
+                     <h4 class="card-title text-2xl mb-4">2.2 APPI Obligations</h4>
+                     <p class="text-gray-600 mb-4">The freeRASP model, which provides PRI to a third party (Talsec) and transfers it cross-border (to the USA), triggers stringent APPI rules:</p>
+                     <ul class="space-y-3 list-disc list-inside text-gray-700">
+                         <li><strong>Third-Party Provision:</strong> Requires confirming the end-user has consented to their data being provided to Talsec.</li>
+                         <li><strong>Cross-Border Transfer:</strong> Requires obtaining prior, informed consent from the user, detailing the destination country's laws and the recipient's security measures.</li>
+                     </ul>
+                     <p class="mt-4 text-gray-600">The RASP+ architecture avoids both issues by keeping data processing internal, dramatically simplifying compliance.</p>
+                </div>
+                <div class="card">
+                    <h4 class="card-title text-2xl mb-4">2.3 Compliance Risk Profile</h4>
+                    <p class="text-gray-600 mb-4">The architectural choice directly translates into legal risk. The chart below visualizes the risk of non-compliance with APPI for each product.</p>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="riskProfileChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4 class="card-title text-2xl mb-4">2.4 Risk Assessment Checklist</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-700 uppercase">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">APPI Requirement</th>
+                                <th scope="col" class="px-6 py-3">freeRASP Assessment</th>
+                                <th scope="col" class="px-6 py-3">RASP+ Assessment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b"><td class="px-6 py-4 font-medium">Lawful Basis for PRI Processing</td><td class="px-6 py-4 text-red-600 font-semibold">High Risk: Requires specific, high-friction consent.</td><td class="px-6 py-4 text-green-600 font-semibold">Low Risk: Managed as internal processing.</td></tr>
+                            <tr class="bg-gray-50 border-b"><td class="px-6 py-4 font-medium">Cross-Border Transfer (to USA)</td><td class="px-6 py-4 text-red-600 font-semibold">High Risk: Requires explicit, informed consent.</td><td class="px-6 py-4 text-green-600 font-semibold">N/A: This risk category is eliminated.</td></tr>
+                            <tr class="bg-white border-b"><td class="px-6 py-4 font-medium">Privacy Policy Disclosure Burden</td><td class="px-6 py-4 text-red-600 font-semibold">High User Friction: Must name Talsec (USA).</td><td class="px-6 py-4 text-green-600 font-semibold">Low Risk: Described as internal monitoring.</td></tr>
+                            <tr class="bg-gray-50"><td class="px-6 py-4 font-medium">Data Controller Relationship</td><td class="px-6 py-4 text-red-600 font-semibold">High Legal Ambiguity: Talsec may be joint controller.</td><td class="px-6 py-4 text-green-600 font-semibold">Low Risk: Customer is sole data controller.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="implementation" class="mb-16 md:mb-24 space-y-12">
+            <div class="text-center">
+                <h3 class="text-3xl md:text-4xl font-bold section-header mb-4">Section 3: Consent and Disclosures</h3>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">This section provides actionable guidance on the practical implementation of Talsec RASP, highlighting the significant operational differences.</p>
+            </div>
+            
+            <div class="card">
+                <h4 class="card-title text-2xl mb-4">3.1 Required Disclosures for Privacy Policies</h4>
+                <p class="text-gray-600 mb-6">The architectural choice has a direct and material impact on the language required in the application's privacy policy. The following table provides template language to illustrate this stark difference, particularly regarding the provision of data to third parties.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                         <thead class="text-xs text-gray-700 uppercase">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Disclosure Topic</th>
+                                <th scope="col" class="px-6 py-3">Recommended Wording for freeRASP</th>
+                                <th scope="col" class="px-6 py-3">Recommended Wording for RASP+</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b"><td class="px-6 py-4 font-medium">Purpose & Data Types</td><td class="px-6 py-4" colspan="2">Similar for both: "To monitor the security of the application...we collect information about your device's security state, application integrity, and network environment. This includes data such as device identifiers, IP address, and application package information."</td></tr>
+                            <tr class="bg-gray-50 border-b"><td class="px-6 py-4 font-medium">Third-Party Provision</td><td class="px-6 py-4 text-red-700">"**Provision to Third Parties:** To provide this security service, we transfer the above data to our technology partner, Talsec s.r.o., whose security analysis infrastructure is located in the United States. By using this application, you consent to this transfer of your data."</td><td class="px-6 py-4 text-green-700">"This data is processed within our secure environment for internal security analysis and is not shared with external third parties for their own use."</td></tr>
+                            <tr class="bg-white"><td class="px-6 py-4 font-medium">Data Controller</td><td class="px-6 py-4 text-red-700">"For the purposes of this security monitoring, [Customer Name] is the primary data controller. Talsec s.r.o. acts as a data processor on our behalf."</td><td class="px-6 py-4 text-green-700">"For all data processed by this application, [Customer Name] is the sole data controller."</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="risk" class="mb-16 md:mb-24 space-y-12">
+            <div class="text-center">
+                <h3 class="text-3xl md:text-4xl font-bold section-header mb-4">Section 4: Liability & Strategic Risk Mitigation</h3>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">This section connects the technical features to the broader strategic objective of managing legal, financial, and reputational risk.</p>
+            </div>
+            <div class="card">
+                <h4 class="card-title text-2xl mb-4">4.1 Advanced RASP+ Features as a Legal Defense</h4>
+                <p class="text-gray-600 mb-6">Data protection laws like APPI mandate "necessary and appropriate" security measures. The advanced features of RASP+ are not just product enhancements; they are concrete, demonstrable controls that strengthen an organization's legal posture and help fulfill its duty of care.</p>
+                <div class="chart-container">
+                    <canvas id="featureChart"></canvas>
+                </div>
+                <p class="text-center mt-6 text-gray-600">Investing in RASP+ allows an organization to demonstrate it implemented a multi-layered, robust security strategy that went beyond the minimum standard.</p>
+            </div>
+        </section>
+
+        <section id="recommendation">
+            <div class="text-center">
+                <h3 class="text-3xl md:text-4xl font-bold section-header mb-4">Section 5: Final Verdict & Strategic Recommendation</h3>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-12">Based on this comprehensive analysis, the following recommendation is provided for any application being developed or managed by NTT DATA for the Japanese market.</p>
+            </div>
+            <div class="card max-w-4xl mx-auto">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200">
+                                <th class="p-4 text-lg font-semibold text-gray-700">Requirement for Japanese Market</th>
+                                <th class="p-4 text-lg font-semibold text-center text-red-600">freeRASP</th>
+                                <th class="p-4 text-lg font-semibold text-center text-blue-700">RASP+</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-200"><td class="p-4 font-medium">Enables APPI Compliance</td><td class="p-4 text-center text-4xl text-red-500 font-bold">&cross;</td><td class="p-4 text-center text-4xl text-green-500 font-bold">&#10003;</td></tr>
+                            <tr class="border-b border-gray-200"><td class="p-4 font-medium">Provides Full Data Sovereignty</td><td class="p-4 text-center text-4xl text-red-500 font-bold">&cross;</td><td class="p-4 text-center text-4xl text-green-500 font-bold">&#10003;</td></tr>
+                            <tr class="border-b border-gray-200"><td class="p-4 font-medium">Lowers Legal & Reputational Risk</td><td class="p-4 text-center text-4xl text-red-500 font-bold">&cross;</td><td class="p-4 text-center text-4xl text-green-500 font-bold">&#10003;</td></tr>
+                            <tr><td class="p-4 font-medium">Demonstrates Highest "Duty of Care"</td><td class="p-4 text-center text-4xl text-red-500 font-bold">&cross;</td><td class="p-4 text-center text-4xl text-green-500 font-bold">&#10003;</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                 <div class="mt-8 text-center bg-blue-50 border border-blue-200 text-blue-800 p-6 rounded-lg">
+                    <p class="font-bold text-xl">Final Recommendation: Adopt RASP+ as the exclusive standard.</p>
+                    <p class="mt-2">The use of freeRASP is not recommended for any production application subject to Japanese law. The additional cost for RASP+ is an essential investment in legal compliance, data governance, and strategic risk mitigation.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="mt-20 py-8 border-t border-gray-200">
+        <p class="text-center text-gray-500 text-sm">This interactive summary is based on the report: "Technical and Legal Analysis of Talsec RASP Integration under Japanese Data Privacy Law".</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const tooltipPlugin = {
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: '#03045E',
+                    titleColor: 'white',
+                    bodyColor: 'white',
+                    borderColor: '#00B4D8',
+                    borderWidth: 1,
+                    padding: 10,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) { return label.join(' '); }
+                            return label;
+                        }
+                    }
+                }
+            };
+            
+            function processLabel(label) {
+                const limit = 20; 
+                if (label.length <= limit) { return label; }
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if ((currentLine + ' ' + word).trim().length > limit && currentLine.length > 0) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                }
+                if (currentLine) { lines.push(currentLine.trim()); }
+                return lines;
+            }
+
+            const riskProfileCtx = document.getElementById('riskProfileChart').getContext('2d');
+            new Chart(riskProfileCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['freeRASP', 'RASP+'],
+                    datasets: [{
+                        label: 'Risk Level',
+                        data: [90, 15],
+                        backgroundColor: ['#D90429', '#0077B6'],
+                        barPercentage: 0.5,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true, max: 100,
+                            ticks: { color: '#4b5563', font: { weight: 'bold' },
+                                callback: function(value) {
+                                    if (value === 0) return 'Low';
+                                    if (value === 100) return 'High';
+                                    return '';
+                                }
+                            },
+                            grid: { drawOnChartArea: false }
+                        },
+                        y: { ticks: { font: { size: 14 }}, grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false }, ...tooltipPlugin }
+                }
+            });
+
+            const featureChartCtx = document.getElementById('featureChart').getContext('2d');
+            const featureLabels = [
+                'Data Sovereignty & Privacy by Design', 'Advanced Threat Intelligence',
+                'Reverse Engineering Resistance', 'Backend API Protection (AppiCrypt)',
+                'Dynamic Security Policy Management'
+            ].map(processLabel);
+            
+            new Chart(featureChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: featureLabels,
+                    datasets: [
+                        { label: 'freeRASP', data: [10, 40, 20, 0, 0], backgroundColor: '#ffb3c1', borderColor: '#D90429', borderWidth: 1 },
+                        { label: 'RASP+', data: [100, 90, 95, 85, 90], backgroundColor: '#CAF0F8', borderColor: '#00B4D8', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                     scales: {
+                        x: { beginAtZero: true, max: 100, ticks: { callback: function(value) { return value + '%' } } },
+                        y: { grid: { display: false }, ticks: { font: { size: 12 }} }
+                    },
+                    plugins: { legend: { position: 'top' }, ...tooltipPlugin }
+                }
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section[id]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active-nav-link', link.getAttribute('href') === `#${entry.target.id}`);
+                        });
+                    }
+                });
+            }, { rootMargin: "-20% 0px -80% 0px" });
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>
