@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talsec RASP: A Compliance Analysis for the Japanese Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Brilliant Blues -->
+    <!-- Application Structure Plan: The infographic follows a linear narrative designed to build a conclusive argument for corporate decision-makers. It starts with a high-level introduction to the two products, then visually contrasts their core architectural difference—the data flow. This technical foundation is then used to explain the legal implications under Japan's APPI, visualized through a risk comparison chart. A feature breakdown follows, reinforcing the value proposition of the premium product. The narrative concludes with a clear, actionable recommendation, making the choice unequivocal. This structure is more persuasive than a simple feature list. -->
+    <!-- Visualization & Content Choices: 
+        - Data Flow Diagram: Report Info -> Goal: Compare processes -> Viz: HTML/CSS Flowchart -> Justification: The most critical point of the report is the data path. A visual flowchart is the clearest way to show the freeRASP vs. RASP+ difference (third-party US transfer vs. internal processing), which is central to the legal argument. Method: HTML/Tailwind.
+        - APPI Risk Profile: Report Info -> Goal: Compare risk levels -> Viz: Horizontal Bar Chart -> Justification: A bar chart provides an immediate, stark visual contrast between the "High" risk of freeRASP and the "Low" risk of RASP+, making the compliance gap instantly understandable. Library: Chart.js/Canvas.
+        - Personally Related Information (PRI): Report Info -> Goal: Inform/Define -> Viz: Styled Icon List -> Justification: A simple list with icons makes the abstract concept of PRI concrete and easy to digest. Method: HTML/Tailwind with Unicode.
+        - Core Feature Comparison: Report Info -> Goal: Compare capabilities -> Viz: Grouped Horizontal Bar Chart -> Justification: This allows for a multi-faceted comparison of features like security, flexibility, and API protection, visually demonstrating the superior value of RASP+. Library: Chart.js/Canvas.
+        - Final Recommendation Checklist: Report Info -> Goal: Organize/Summarize -> Viz: HTML Table with Icons -> Justification: A final checklist with clear check (✓) and cross (✗) icons provides a powerful, at-a-glance summary of the analysis, reinforcing the final recommendation. Method: HTML/Tailwind with Unicode.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        .flow-card {
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+        .flow-arrow {
+            font-size: 2.5rem;
+            line-height: 1;
+            color: #495057;
+        }
+        .section-header {
+            color: #03045E;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 2rem;
+        }
+        .card-title {
+            color: #0077B6;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <main class="container mx-auto px-4 py-12 md:py-20">
+
+        <section id="intro" class="text-center mb-20 md:mb-28">
+            <h1 class="text-4xl md:text-5xl font-extrabold section-header mb-4">Mobile Security in Japan: A Critical Choice</h1>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                Choosing a mobile security solution is more than a technical decision—it's a legal one. This analysis compares Talsec's freeRASP and RASP+ to reveal a critical distinction in data handling that directly impacts compliance with Japan's Act on the Protection of Personal Information (APPI).
+            </p>
+        </section>
+
+        <section id="data-flow" class="mb-20 md:mb-28">
+            <h2 class="text-3xl md:text-4xl font-bold section-header text-center mb-12">The Core Difference: Where Does Your Data Go?</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <div class="card border-t-4 border-red-500">
+                    <h3 class="text-2xl font-bold text-red-600 mb-6 text-center">freeRASP Architecture</h3>
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="bg-gray-100 p-4 rounded-lg w-full text-center">
+                            <span class="font-bold text-lg">Your Mobile App</span>
+                        </div>
+                        <div class="flow-arrow">&#129047;</div>
+                        <div class="flow-card border-gray-400 p-4 rounded-lg w-full text-center">
+                            <span class="font-semibold">Device & Network Data (PRI)</span>
+                            <span class="block text-sm text-gray-500">IP Address, Device ID, etc.</span>
+                        </div>
+                        <div class="flow-arrow">&#129047;</div>
+                        <div class="flow-card border-red-500 bg-red-50 p-4 rounded-lg w-full text-center">
+                            <span class="font-bold text-lg text-red-700">Talsec Cloud (USA)</span>
+                            <span class="block text-sm text-red-600">Third-Party, Cross-Border Transfer</span>
+                        </div>
+                    </div>
+                     <p class="mt-6 text-gray-600 text-center">Data is automatically sent to a third party in the USA, triggering complex APPI obligations for consent and disclosure.</p>
+                </div>
+
+                <div class="card border-t-4 border-blue-600">
+                    <h3 class="text-2xl font-bold text-blue-700 mb-6 text-center">RASP+ Architecture</h3>
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="bg-gray-100 p-4 rounded-lg w-full text-center">
+                            <span class="font-bold text-lg">Your Mobile App</span>
+                        </div>
+                        <div class="flow-arrow">&#129047;</div>
+                        <div class="flow-card border-gray-400 p-4 rounded-lg w-full text-center">
+                            <span class="font-semibold">Device & Network Data (PRI)</span>
+                             <span class="block text-sm text-gray-500">IP Address, Device ID, etc.</span>
+                        </div>
+                        <div class="flow-arrow">&#129047;</div>
+                        <div class="flow-card border-blue-600 bg-blue-50 p-4 rounded-lg w-full text-center">
+                            <span class="font-bold text-lg text-blue-800">Your Cloud (e.g., in Japan)</span>
+                            <span class="block text-sm text-blue-700">Internal Processing, Full Control</span>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-gray-600 text-center">You control the endpoint. Data remains within your environment, eliminating third-party and cross-border transfer risks.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="compliance-gap" class="mb-20 md:mb-28">
+            <h2 class="text-3xl md:text-4xl font-bold section-header text-center mb-4">The APPI Compliance Gap</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 text-center mb-12">
+                Under APPI, data like device identifiers and IP addresses are "Personally Related Information" (PRI). Handling this data incorrectly creates significant legal risk.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8 items-center">
+                <div class="md:col-span-2 card">
+                     <h3 class="card-title text-xl mb-4">Personally Related Information (PRI) Includes:</h3>
+                     <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-center"><span class="text-blue-500 mr-3 text-xl">&#128187;</span> Device & Hardware IDs</li>
+                        <li class="flex items-center"><span class="text-blue-500 mr-3 text-xl">&#127760;</span> IP Address</li>
+                        <li class="flex items-center"><span class="text-blue-500 mr-3 text-xl">&#128241;</span> Advertising Identifiers (IDFA/AAID)</li>
+                        <li class="flex items-center"><span class="text-blue-500 mr-3 text-xl">&#128189;</span> Application Integrity Markers</li>
+                     </ul>
+                </div>
+                <div class="md:col-span-3 card">
+                    <h3 class="card-title text-xl mb-4">APPI Compliance Risk Profile</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="riskProfileChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="feature-comparison" class="mb-20 md:mb-28">
+            <h2 class="text-3xl md:text-4xl font-bold section-header text-center mb-4">RASP+ Is More Than Compliance: It's Superior Security</h2>
+             <p class="max-w-3xl mx-auto text-lg text-gray-600 text-center mb-12">
+                Beyond solving the privacy issue, RASP+ provides advanced security features that constitute a stronger legal defense by demonstrating a higher duty of care.
+            </p>
+            <div class="card">
+                 <h3 class="card-title text-xl mb-6">Core Feature Comparison</h3>
+                 <div class="chart-container">
+                    <canvas id="featureChart"></canvas>
+                 </div>
+            </div>
+        </section>
+
+        <section id="recommendation">
+            <h2 class="text-3xl md:text-4xl font-bold section-header text-center mb-4">The Final Verdict: A Strategic Imperative</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 text-center mb-12">
+                For applications in the Japanese market, the choice is clear. The subscription cost for RASP+ is an essential investment in legal compliance, data governance, and strategic risk mitigation.
+            </p>
+            <div class="card max-w-4xl mx-auto">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="p-4 text-lg font-semibold">Requirement</th>
+                                <th class="p-4 text-lg font-semibold text-center">freeRASP</th>
+                                <th class="p-4 text-lg font-semibold text-center">RASP+</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="p-4 font-medium">Enables APPI Compliance</td>
+                                <td class="p-4 text-center text-4xl text-red-500">&cross;</td>
+                                <td class="p-4 text-center text-4xl text-green-500">&#10003;</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-4 font-medium">Provides Data Sovereignty</td>
+                                <td class="p-4 text-center text-4xl text-red-500">&cross;</td>
+                                <td class="p-4 text-center text-4xl text-green-500">&#10003;</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-4 font-medium">Lowers Legal & Reputational Risk</td>
+                                <td class="p-4 text-center text-4xl text-red-500">&cross;</td>
+                                <td class="p-4 text-center text-4xl text-green-500">&#10003;</td>
+                            </tr>
+                             <tr>
+                                <td class="p-4 font-medium">Demonstrates Duty of Care</td>
+                                <td class="p-4 text-center text-4xl text-red-500">&cross;</td>
+                                <td class="p-4 text-center text-4xl text-green-500">&#10003;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                 <div class="mt-8 text-center bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg">
+                    <p class="font-bold">Recommendation for NTT DATA: Adopt RASP+ as the exclusive standard for all applications deployed in Japan.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="mt-20 py-8 border-t">
+        <p class="text-center text-gray-500">Infographic based on the report: "Technical and Legal Analysis of Talsec RASP Integration under Japanese Data Privacy Law"</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const tooltipPlugin = {
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: '#03045E',
+                    titleColor: 'white',
+                    bodyColor: 'white',
+                    borderColor: '#00B4D8',
+                    borderWidth: 1,
+                    padding: 10,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            } else {
+                              return label;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            function processLabel(label) {
+                if (label.length > 16) {
+                    const words = label.split(' ');
+                    const lines = [];
+                    let currentLine = '';
+                    for (const word of words) {
+                        if ((currentLine + ' ' + word).trim().length > 16) {
+                            lines.push(currentLine.trim());
+                            currentLine = word;
+                        } else {
+                            currentLine = (currentLine + ' ' + word).trim();
+                        }
+                    }
+                    if (currentLine) {
+                        lines.push(currentLine.trim());
+                    }
+                    return lines;
+                }
+                return label;
+            }
+
+            const riskProfileCtx = document.getElementById('riskProfileChart').getContext('2d');
+            new Chart(riskProfileCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['freeRASP', 'RASP+'],
+                    datasets: [{
+                        label: 'Risk Level',
+                        data: [90, 20],
+                        backgroundColor: ['#D90429', '#0077B6'],
+                        barPercentage: 0.6,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    if(value === 0) return 'Low';
+                                    if(value === 100) return 'High';
+                                    return '';
+                                }
+                            }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        ...tooltipPlugin
+                    }
+                }
+            });
+
+            const featureChartCtx = document.getElementById('featureChart').getContext('2d');
+            const featureLabels = [
+                'Data Sovereignty & Privacy',
+                'Advanced Threat Detection',
+                'Reverse Engineering Resistance',
+                'Backend API Protection',
+                'Dynamic Security Policy'
+            ].map(processLabel);
+            
+            new Chart(featureChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: featureLabels,
+                    datasets: [
+                        {
+                            label: 'freeRASP',
+                            data: [10, 40, 20, 0, 0],
+                            backgroundColor: '#ffb3c1'
+                        },
+                        {
+                            label: 'RASP+',
+                            data: [100, 90, 95, 85, 90],
+                            backgroundColor: '#00B4D8'
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                     scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%' }
+                            }
+                        },
+                         y: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'top' },
+                         ...tooltipPlugin
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
